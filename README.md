@@ -1,6 +1,6 @@
 <div align="center">
 
-# Anyone.skill
+# 任何人.skill
 
 > *"把任何人蒸馏成 AI，让记忆可以对话。"*
 
