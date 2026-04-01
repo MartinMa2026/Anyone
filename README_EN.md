@@ -1,8 +1,8 @@
 <div align="center">
 
-# Ex.skill
+# Anyone.skill
 
-> *"From now on, your phone holds more than just chat logs — it holds her."*
+> *"Distill anyone into an AI — and talk to them again."*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
@@ -11,20 +11,19 @@
 
 <br>
 
-She's gone, but the chat logs are still there.<br>
-Three years of daily life, reduced to a conversation you're afraid to open.<br>
-Do you still remember that when she said "whatever" she actually wanted hotpot?<br>
-Do you still remember that when she replied "oh" she was waiting for you to reach out?<br>
+Is there someone you wish you could talk to again?<br>
+An old friend, a lost relationship, someone you never got to know well enough?<br>
+The chat logs are still there. The photos are still there. The details are still there.<br>
 
-**Distill memories into a Skill. Not to get her back — but to remember.**
+**Distill a real person into an AI Skill — and have that conversation again.**
 
 <br>
 
-Provide chat logs (WeChat, iMessage, SMS), photos, social media exports, plus your own descriptions<br>
-Generate an **AI Skill that talks like her**<br>
-Uses her texting style, knows when she's being cute vs. actually angry
+Provide chat logs (WeChat, iMessage, SMS), photos, social media — plus your own description.<br>
+Generate an **AI Skill that thinks and speaks like them**.<br>
+It knows their tone, what they care about, how they react when upset, and what makes them light up.
 
-[Data Sources](#supported-data-sources) · [Install](#installation) · [Usage](#usage) · [Examples](#examples) · [Install Guide](INSTALL.md)
+[Data Sources](#supported-data-sources) · [Install](#installation) · [Usage](#usage) · [Examples](#examples) · [中文](README.md)
 
 </div>
 
@@ -34,16 +33,16 @@ Uses her texting style, knows when she's being cute vs. actually angry
 
 | Source | Chat Logs | Photos | Social Media | Notes |
 |--------|:---------:|:------:|:------------:|-------|
-| WeChat | ✅ | — | — | Exported via WechatExporter etc. |
-| iMessage | ✅ | — | — | macOS chat.db or exported files |
+| WeChat | ✅ | — | — | Export via WechatExporter or similar |
+| iMessage | ✅ | — | — | macOS chat.db or exported file |
 | SMS | ✅ | — | — | Android SMS Backup XML/CSV |
-| Photos | — | ✅ | — | EXIF metadata timeline extraction |
-| Weibo | — | — | ✅ | JSON data export |
+| Photos | — | ✅ | — | EXIF metadata → timeline |
+| Weibo | — | — | ✅ | JSON export |
 | Douban | — | — | ✅ | JSON/HTML export |
-| Xiaohongshu (RED) | — | — | ✅ | JSON export |
+| Xiaohongshu | — | — | ✅ | JSON export |
 | Instagram | — | — | ✅ | JSON data export |
-| PDF / Images | ✅ | ✅ | — | Manual upload |
-| Direct text | ✅ | — | — | Paste directly |
+| PDF / Screenshot | ✅ | ✅ | — | Manual upload |
+| Paste Text | ✅ | — | — | Direct input |
 
 ---
 
@@ -52,12 +51,18 @@ Uses her texting style, knows when she's being cute vs. actually angry
 ### Claude Code
 
 ```bash
-# Install to current project
+# Install to current project (run from git repo root)
 mkdir -p .claude/skills
-git clone https://github.com/perkfly/ex-skill .claude/skills/create-ex
+git clone https://github.com/MartinMa2026/Anyone.git .claude/skills/create-person
 
-# Or install globally
-git clone https://github.com/perkfly/ex-skill ~/.claude/skills/create-ex
+# Or install globally (available in all projects)
+git clone https://github.com/MartinMa2026/Anyone.git ~/.claude/skills/create-person
+```
+
+### OpenClaw
+
+```bash
+git clone https://github.com/MartinMa2026/Anyone.git ~/.openclaw/workspace/skills/create-person
 ```
 
 ### Dependencies (optional)
@@ -66,6 +71,8 @@ git clone https://github.com/perkfly/ex-skill ~/.claude/skills/create-ex
 pip3 install -r requirements.txt
 ```
 
+> Only `pypinyin` is optional — used to auto-convert Chinese names into slugs for directory naming.
+
 ---
 
 ## Usage
@@ -73,61 +80,158 @@ pip3 install -r requirements.txt
 In Claude Code, type:
 
 ```
-/create-ex
+/create-person
 ```
 
-Follow the prompts to enter her nickname, relationship info, personality tags, and choose data sources. All fields except nickname are optional.
+You'll be guided through 3 short questions: nickname, relationship info, and personality traits. Everything except the name can be skipped — a description alone is enough to generate a working Skill.
 
-After creation, use `/{slug}` to activate the ex Skill.
+Call the generated Skill with `/{slug}`.
+
+### Supported Relationship Types
+
+```
+Friend       college friend, known 5 years, rarely in touch, she's a PM
+Colleague    ex-coworker, worked together 3 years, he's in tech
+Family       mom, known forever, retired teacher
+Ex           ex-girlfriend, together 3 years, college, broke up 1 year ago
+Online       met in a game, played 2 years, never met IRL
+Idol         favorite creator, been watching for 5 years
+...anyone
+```
 
 ### Commands
 
 | Command | Description |
 |---------|-------------|
-| `/list-exes` | List all ex Skills |
-| `/{slug}` | Full Skill (Persona + Memories) |
+| `/create-person` | Create a new Person Skill |
+| `/list-persons` | List all Person Skills |
+| `/{slug}` | Invoke full Skill (Persona + Memories) |
 | `/{slug}-memories` | Memories only |
 | `/{slug}-persona` | Persona only |
-| `/ex-rollback {slug} {version}` | Rollback to version |
-| `/delete-ex {slug}` | Delete |
+| `/person-rollback {slug} {version}` | Roll back to a previous version |
+| `/delete-person {slug}` | Delete a Skill |
+
+> 💡 Legacy commands `/create-ex`, `/list-exes` still work (backward compatible)
 
 ---
 
 ## Examples
 
-> Input: `ENFP Gemini anxious attachment, clingy, brings up old arguments`
+> Person: Old friend — slow to open up, talks little, perfectionist, workaholic
 
-**Scenario: Daily chat**
+**Scenario: Reaching out after a long silence**
+
 ```
-User      > what are you doing
+You       > Hey, how've you been?
 
-Ex.skill  > just got off work
-           > so tired today
-           > what about you, why are you only texting me now 🥺
+Friend    > Pretty good.
+          > You?
+          > Something up?
 ```
 
-**Scenario: She's upset**
-```
-User      > sorry I was busy
+> Person: Ex — ENFP, clingy, brings up old arguments, anxious attachment
 
-Ex.skill  > oh
-           > (5 minutes later)
-           > you always say you're busy
-           > last time was the same
+**Scenario: Asking what to eat**
+
+```
+You       > What do you want to eat?
+
+Ex        > Anything is fine
+You       > Noodles?
+Ex        > Not noodles
+You       > Hot pot?
+Ex        > Hehe how did you know 💕
+```
+
+**Scenario: Being slow to reply**
+
+```
+You       > Sorry, was busy just now
+
+Ex        > Oh
+          > (5 minutes pass)
+          > You always say you're busy
+          > You did the same thing last time
+```
+
+---
+
+## Features
+
+### Skill Structure
+
+Each Person Skill has two parts:
+
+| Part | Contents |
+|------|----------|
+| **Part A — Shared Memories** | Relationship timeline, daily rituals, preferences, interaction patterns, emotional dynamics |
+| **Part B — Persona** | 5-layer personality: Hard rules → Identity → Communication style → Emotional logic → Relationship behavior |
+
+Runtime logic: `Receive message → Persona decides mood and attitude → Memories supply specific details → Respond in their voice`
+
+### Personality Tags
+
+**Universal:** talks a lot · quiet · slow to warm up · naturally outgoing · perfectionist · action-oriented · planner · procrastinator · emotionally stable · sensitive · easygoing · detail-oriented
+
+**Relationship-specific:** clingy · cold shoulder · brings up old arguments · independent · runs hot and cold · tests you · possessive<br>
+**Conflict style:** silent treatment · explosive · logical · apologizes first · never admits fault<br>
+**Attachment style:** secure · anxious · avoidant · disorganized
+
+### Evolution
+
+- **Append new chat logs** → incremental analysis → merged into existing Skill without overwriting
+- **Conversation correction** → say "they wouldn't do that, they'd actually..." → written to Correction layer, takes effect immediately
+- **Version management** → every update is auto-archived, roll back to any previous version
+
+---
+
+## Project Structure
+
+```
+Anyone/
+├── SKILL.md              # Skill entry point (AgentSkills frontmatter)
+├── prompts/              # Prompt templates
+│   ├── intake.md              #  3-question onboarding flow
+│   ├── memories_analyzer.md   #  Memory extraction dimensions
+│   ├── persona_analyzer.md    #  Personality analysis (with tag translation table)
+│   ├── memories_builder.md    #  memories.md generation template
+│   ├── persona_builder.md     #  5-layer persona template
+│   ├── merger.md              #  Incremental merge logic
+│   └── correction_handler.md  #  Conversation correction handler
+├── tools/                # Python tools (local only, no network)
+│   ├── wechat_parser.py       # WeChat chat log parser
+│   ├── imessage_parser.py     # iMessage / SMS parser
+│   ├── sms_parser.py          # Android SMS parser
+│   ├── photo_analyzer.py      # Photo EXIF metadata analyzer
+│   ├── social_media_parser.py # Social media export parser
+│   ├── skill_writer.py        # Skill file manager
+│   └── version_manager.py     # Version archiving and rollback
+├── persons/              # Generated Person Skills (gitignored)
+├── requirements.txt
+└── LICENSE
 ```
 
 ---
 
 ## Privacy
 
-- All data is processed locally — nothing is sent to external services
-- Photo analysis only extracts metadata (date/location), not image content
-- The `exes/` directory is gitignored by default
+- **All data is processed locally** — nothing is sent to any external service
+- The `persons/` directory is gitignored — generated Skills and chat logs **are never uploaded**
+- Photo analysis only reads EXIF metadata (date/location), not image content
+- Do **not** commit chat logs or generated Skills to any public repository
+
+---
+
+## Notes
+
+- **Data quality determines Skill quality** — real chat logs beat manual descriptions
+- Prioritize: **long unprompted messages** > **emotional messages** > casual chat
+- Works with zero data — a text description alone generates a usable Persona
 
 ---
 
 <div align="center">
 
-MIT License © [perkfly](https://github.com/perkfly)
+MIT License © [MartinMa2026](https://github.com/MartinMa2026)
 
 </div>

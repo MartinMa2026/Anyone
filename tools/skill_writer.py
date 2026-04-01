@@ -8,13 +8,13 @@ Skill 文件写入器
 用法：
     python3 skill_writer.py --action create --slug xiaomei --meta meta.json \
         --memories memories_content.md --persona persona_content.md \
-        --base-dir ./exes
+        --base-dir ./persons
 
     python3 skill_writer.py --action update --slug xiaomei \
         --memories-patch memories_patch.md --persona-patch persona_patch.md \
-        --base-dir ./exes
+        --base-dir ./persons
 
-    python3 skill_writer.py --action list --base-dir ./exes
+    python3 skill_writer.py --action list --base-dir ./persons
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from typing import Optional
 
 SKILL_MD_TEMPLATE = """\
 ---
-name: ex_{slug}
+name: person_{slug}
 description: {name}，{identity}
 user-invocable: true
 ---
@@ -86,27 +86,32 @@ def slugify(name: str) -> str:
 
     import re
     slug = re.sub(r"_+", "_", slug).strip("_")
-    return slug if slug else "ex"
+    return slug if slug else "person"
 
 
 def build_identity_string(meta: dict) -> str:
-    """从 meta 构建身份描述字符串"""
+    """从 meta 构建身份描述字符串（支持通用关系类型和恋爱关系向下兼容）"""
     profile = meta.get("profile", {})
     parts = []
 
+    relation_type = profile.get("relation_type", "")
     duration = profile.get("duration", "")
     how_met = profile.get("how_met", "")
-    time_since = profile.get("time_since_breakup", "")
     occupation = profile.get("occupation", "")
 
+    # 向下兼容：恋爱关系字段
+    time_since_breakup = profile.get("time_since_breakup", "")
+
+    if relation_type:
+        parts.append(relation_type)
     if duration:
-        parts.append(f"在一起 {duration}")
+        parts.append(f"认识 {duration}" if not time_since_breakup else f"在一起 {duration}")
     if how_met:
         parts.append(how_met)
-    if time_since:
-        parts.append(f"分手 {time_since}")
+    if time_since_breakup:
+        parts.append(f"分手 {time_since_breakup}")
 
-    identity = "，".join(parts) if parts else "前女友"
+    identity = "，".join(parts) if parts else "人物"
 
     if occupation:
         identity += f"，{occupation}"
@@ -125,7 +130,7 @@ def create_skill(
     memories_content: str,
     persona_content: str,
 ) -> Path:
-    """创建新的前女友 Skill 目录结构"""
+    """创建新的人物 Skill 目录结构"""
 
     skill_dir = base_dir / slug
     skill_dir.mkdir(parents=True, exist_ok=True)
@@ -157,7 +162,7 @@ def create_skill(
 
     # 写入 memories-only skill
     memories_only = (
-        f"---\nname: ex_{slug}_memories\n"
+        f"---\nname: person_{slug}_memories\n"
         f"description: {name} 的共同记忆（仅 Memories，无 Persona）\n"
         f"user-invocable: true\n---\n\n{memories_content}\n"
     )
@@ -165,7 +170,7 @@ def create_skill(
 
     # 写入 persona-only skill
     persona_only = (
-        f"---\nname: ex_{slug}_persona\n"
+        f"---\nname: person_{slug}_persona\n"
         f"description: {name} 的人物性格（仅 Persona，无共同记忆）\n"
         f"user-invocable: true\n---\n\n{persona_content}\n"
     )
@@ -270,12 +275,12 @@ def update_skill(
     return new_version
 
 
-def list_exes(base_dir: Path) -> list:
-    """列出所有已创建的前女友 Skill"""
-    exes = []
+def list_persons(base_dir: Path) -> list:
+    """列出所有已创建的人物 Skill"""
+    persons = []
 
     if not base_dir.exists():
-        return exes
+        return persons
 
     for skill_dir in sorted(base_dir.iterdir()):
         if not skill_dir.is_dir():
@@ -289,7 +294,7 @@ def list_exes(base_dir: Path) -> list:
         except Exception:
             continue
 
-        exes.append({
+        persons.append({
             "slug": meta.get("slug", skill_dir.name),
             "name": meta.get("name", skill_dir.name),
             "identity": build_identity_string(meta),
@@ -298,14 +303,14 @@ def list_exes(base_dir: Path) -> list:
             "corrections_count": meta.get("corrections_count", 0),
         })
 
-    return exes
+    return persons
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Skill 文件写入器")
+    parser = argparse.ArgumentParser(description="人物 Skill 文件写入器")
     parser.add_argument("--action", required=True, choices=["create", "update", "list"])
-    parser.add_argument("--slug", help="前女友 slug（用于目录名）")
-    parser.add_argument("--name", help="前女友昵称")
+    parser.add_argument("--slug", help="人物 slug（用于目录名）")
+    parser.add_argument("--name", help="人物昵称")
     parser.add_argument("--meta", help="meta.json 文件路径")
     parser.add_argument("--memories", help="memories.md 内容文件路径")
     parser.add_argument("--persona", help="persona.md 内容文件路径")
@@ -313,23 +318,23 @@ def main() -> None:
     parser.add_argument("--persona-patch", help="persona.md 增量更新内容文件路径")
     parser.add_argument(
         "--base-dir",
-        default="./exes",
-        help="前女友 Skill 根目录（默认：./exes）",
+        default="./persons",
+        help="人物 Skill 根目录（默认：./persons）",
     )
 
     args = parser.parse_args()
     base_dir = Path(args.base_dir).expanduser()
 
     if args.action == "list":
-        exes = list_exes(base_dir)
-        if not exes:
-            print("暂无已创建的前女友 Skill")
+        persons = list_persons(base_dir)
+        if not persons:
+            print("暂无已创建的人物 Skill")
         else:
-            print(f"已创建 {len(exes)} 个前女友 Skill：\n")
-            for e in exes:
-                updated = e["updated_at"][:10] if e["updated_at"] else "未知"
-                print(f"  [{e['slug']}]  {e['name']} — {e['identity']}")
-                print(f"    版本: {e['version']}  纠正次数: {e['corrections_count']}  更新: {updated}")
+            print(f"已创建 {len(persons)} 个人物 Skill：\n")
+            for p in persons:
+                updated = p["updated_at"][:10] if p["updated_at"] else "未知"
+                print(f"  [{p['slug']}]  {p['name']} — {p['identity']}")
+                print(f"    版本: {p['version']}  纠正次数: {p['corrections_count']}  更新: {updated}")
                 print()
 
     elif args.action == "create":
@@ -343,7 +348,7 @@ def main() -> None:
         if args.name:
             meta["name"] = args.name
 
-        slug = args.slug or slugify(meta.get("name", "ex"))
+        slug = args.slug or slugify(meta.get("name", "person"))
 
         memories_content = ""
         if args.memories:
@@ -354,7 +359,7 @@ def main() -> None:
             persona_content = Path(args.persona).read_text(encoding="utf-8")
 
         skill_dir = create_skill(base_dir, slug, meta, memories_content, persona_content)
-        print(f"✅ Skill 已创建：{skill_dir}")
+        print(f"✅ 人物 Skill 已创建：{skill_dir}")
         print(f"   触发词：/{slug}")
 
     elif args.action == "update":

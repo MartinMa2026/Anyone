@@ -16,9 +16,10 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
+from typing import Optional, List, Dict
 
 
-def extract_exif_date(file_path: str) -> str | None:
+def extract_exif_date(file_path: str) -> Optional[str]:
     """从 JPEG 文件中提取 EXIF 拍摄日期（不依赖 PIL）"""
     try:
         with open(file_path, "rb") as f:
@@ -74,7 +75,7 @@ def get_photo_date(file_path: Path) -> str:
     return datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
 
 
-def scan_photos(directory: str) -> list[dict]:
+def scan_photos(directory: str) -> List[dict]:
     """扫描目录中的照片文件"""
     photo_extensions = {".jpg", ".jpeg", ".png", ".heic", ".heif", ".webp", ".tiff", ".bmp"}
     photos = []
@@ -97,7 +98,7 @@ def scan_photos(directory: str) -> list[dict]:
     return photos
 
 
-def group_by_date(photos: list[dict]) -> dict[str, list]:
+def group_by_date(photos: List[dict]) -> Dict[str, list]:
     """按日期分组照片"""
     groups = defaultdict(list)
     for photo in photos:
