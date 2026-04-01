@@ -8,6 +8,7 @@
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-blueviolet)](https://claude.ai/code)
 [![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-green)](https://agentskills.io)
+[![Based on ex-skill](https://img.shields.io/badge/Based%20on-ex--skill-orange)](https://github.com/perkfly/ex-skill)
 
 <br>
 
@@ -117,21 +118,43 @@ pip3 install -r requirements.txt
 
 ## 效果示例
 
-> 人物：老朋友，慢热、话少、完美主义、工作狂
+> 克隆任意一种关系，不只是前任。
 
-**场景一：好久不联系突然聊天**
+**案例一：已故的奶奶（家人）**
+> 输入：手写信扫描件 + 家人描述「话不多、刀子嘴豆腐心、最爱唠叨吃饭」
 
 ```
-你     > 最近怎么样
+你     > 奶奶，我最近工作压力好大
 
-老朋友  > 还行
-       > 你呢
-       > 最近有什么事吗
+奶奶   > 吃饭了没？
+       > 压力大就多吃点
+       > 你从小就这样，什么事都憋着不说
 ```
 
-> 人物：前任，ENFP · 爱撒娇 · 翻旧账 · 焦虑型依恋
+**案例二：大学时期的好朋友（多年未联系）**
+> 输入：微信三年聊天记录，INFP · 慢热 · 话少 · 极有主见
 
-**场景二：撒娇**
+```
+你     > 想你了，最近怎么样
+
+好友   > 还行
+       > 你？
+       > 突然找我，是发生什么了吗
+```
+
+**案例三：前同事兼导师（职场关系）**
+> 输入：工作群聊 + 邮件记录，理性 · 高标准 · 话少但每句都到位
+
+```
+你     > 这份方案你觉得怎么样
+
+前辈   > 结论在哪？
+       > 数据来源标一下
+       > 整体逻辑还行，但第三点有个漏洞
+```
+
+**案例四：前任（恋爱关系）**
+> 输入：iMessage 两年记录，ENFP · 爱撒娇 · 翻旧账 · 焦虑型依恋
 
 ```
 你     > 想吃什么
@@ -141,17 +164,6 @@ pip3 install -r requirements.txt
 前任   > 不想吃面
 你     > 火锅？
 前任   > 嘿嘿你怎么知道的 💕
-```
-
-**场景三：惹她/他不开心**
-
-```
-你     > 不好意思刚才在忙
-
-前任   > 哦
-       > （沉默5分钟）
-       > 你每次都说在忙
-       > 上次也是这样
 ```
 
 ---
@@ -227,6 +239,16 @@ Anyone/
 - **数据质量决定 Skill 质量**：真实聊天记录 > 仅手动描述
 - 建议优先收集：**主动发的长消息** > **情感类消息** > 日常闲聊
 - 没有任何数据也能运行——仅凭文字描述同样能生成有效的 Persona
+
+---
+
+## 致谢
+
+Anyone.skill 基于 [perkfly/ex-skill](https://github.com/perkfly/ex-skill) 改造而来。
+
+ex-skill 是专注于「前女友/前任」关系的蒸馏 Skill，构建了完整的聊天记录解析工具链、五层 Persona 结构和记忆进化机制——这些是 Anyone.skill 的技术基础。
+
+Anyone.skill 在此之上将适用范围从「恋爱关系」扩展为**任意人物**，并新增了通用性格标签体系、多关系类型支持和自动关系模式检测。
 
 ---
 

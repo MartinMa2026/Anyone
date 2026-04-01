@@ -8,6 +8,7 @@
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-blueviolet)](https://claude.ai/code)
 [![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-green)](https://agentskills.io)
+[![Based on ex-skill](https://img.shields.io/badge/Based%20on-ex--skill-orange)](https://github.com/perkfly/ex-skill)
 
 <br>
 
@@ -117,41 +118,52 @@ Idol         favorite creator, been watching for 5 years
 
 ## Examples
 
-> Person: Old friend — slow to open up, talks little, perfectionist, workaholic
+> Clone any kind of relationship — not just exes.
 
-**Scenario: Reaching out after a long silence**
-
-```
-You       > Hey, how've you been?
-
-Friend    > Pretty good.
-          > You?
-          > Something up?
-```
-
-> Person: Ex — ENFP, clingy, brings up old arguments, anxious attachment
-
-**Scenario: Asking what to eat**
+**Case 1: A late grandmother (family)**
+> Input: scanned handwritten letters + family description: "quiet, blunt but warm-hearted, always nagged about eating"
 
 ```
-You       > What do you want to eat?
+You      > Grandma, work has been so stressful lately
 
-Ex        > Anything is fine
-You       > Noodles?
-Ex        > Not noodles
-You       > Hot pot?
-Ex        > Hehe how did you know 💕
+Grandma  > Did you eat?
+         > Stress means you need to eat more
+         > You've always been like this — bottling everything up
 ```
 
-**Scenario: Being slow to reply**
+**Case 2: A college best friend (lost touch)**
+> Input: 3 years of WeChat logs, INFP · slow to warm up · quiet · quietly opinionated
 
 ```
-You       > Sorry, was busy just now
+You      > Miss you, how've you been?
 
-Ex        > Oh
-          > (5 minutes pass)
-          > You always say you're busy
-          > You did the same thing last time
+Friend   > Good enough
+         > You?
+         > Something happen? You never just reach out
+```
+
+**Case 3: A former colleague / mentor (work relationship)**
+> Input: team group chats + email threads, rational · high standards · economical with words
+
+```
+You      > What do you think of this proposal?
+
+Mentor   > Where's the conclusion?
+         > Cite your data sources
+         > Logic holds overall, but there's a gap in point three
+```
+
+**Case 4: An ex (romantic relationship)**
+> Input: 2 years of iMessage, ENFP · clingy · brings up old stuff · anxious attachment
+
+```
+You      > What do you want to eat?
+
+Ex       > Anything is fine
+You      > Noodles?
+Ex       > Not noodles
+You      > Hot pot?
+Ex       > Hehe how did you know 💕
 ```
 
 ---
@@ -227,6 +239,16 @@ Anyone/
 - **Data quality determines Skill quality** — real chat logs beat manual descriptions
 - Prioritize: **long unprompted messages** > **emotional messages** > casual chat
 - Works with zero data — a text description alone generates a usable Persona
+
+---
+
+## Credits
+
+Anyone.skill is built on top of [perkfly/ex-skill](https://github.com/perkfly/ex-skill).
+
+ex-skill is a Skill focused on distilling romantic relationships (ex-girlfriends/ex-boyfriends) into AI. It established the complete chat log parsing pipeline, 5-layer Persona architecture, and memory evolution mechanism that Anyone.skill is built on.
+
+Anyone.skill extends the scope from romantic relationships to **any person**, and adds a universal personality tag system, multi-relationship-type support, and auto relationship mode detection.
 
 ---
 
